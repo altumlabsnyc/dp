@@ -1,5 +1,6 @@
 // TODO: Duplicate or move this file outside the `_examples` folder to make it a route
 
+import Table from "@/components/Table";
 import {
   createServerActionClient,
   createServerComponentClient,
@@ -37,12 +38,14 @@ export default async function ProtectedRoute() {
   return (
     <div className="flex flex-col items-center">
       dashboard
+      
       <button
         onClick={signOut}
         className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
       >
         Sign out
       </button>
+      <Table />
     </div>
   );
 }
