@@ -81,7 +81,7 @@ export default async function Index() {
             </p>
           </div>
           <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-          {emailDomain === "altumlabs.com" ? (
+          {emailDomain === "altumlabs.co" ? (
             <>
               <Link
                 href="/dash"
@@ -94,10 +94,12 @@ export default async function Index() {
               </p>
             </>
           ) : (
-            <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
-              You must sign in with an <code>altumlabs.com</code> email address
-              to access this service.
-            </p>
+            <>
+              <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
+                You must sign in with an <code>altumlabs.co</code> email address
+                to access this service.
+              </p>
+            </>
           )}
         </div>
 
