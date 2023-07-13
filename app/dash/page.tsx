@@ -32,6 +32,8 @@ export default async function ProtectedRoute() {
     redirect("/login");
   }
 
+  console.log("test");
+
   return (
     <div className="flex flex-col items-center">
       dashboard
