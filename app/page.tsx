@@ -83,15 +83,15 @@ export default async function Index() {
           <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
           {emailDomain === "altumlabs.co" ? (
             <>
+              <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
+                Welcome, {user?.user_metadata.full_name ?? "friend"}.
+              </p>
               <Link
                 href="/dash"
                 className="bg-foreground py-3 px-6 rounded-lg font-mono text-sm text-background"
               >
                 Go to dashboard
               </Link>
-              <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
-                Welcome, {user?.user_metadata.full_name ?? "friend"}.
-              </p>
             </>
           ) : (
             <>

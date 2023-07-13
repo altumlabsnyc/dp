@@ -1,8 +1,6 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -59,13 +57,6 @@ export default function Login() {
         Back
       </Link>
       <p>Sign in with your Altum gmail account to continue</p>
-      <Auth
-        supabaseClient={supabase}
-        appearance={{ theme: ThemeSupa }}
-        providers={["google"]}
-        onlyThirdPartyProviders
-        redirectTo={`${location.origin}/auth/callback`}
-      />
     </div>
   );
 }
