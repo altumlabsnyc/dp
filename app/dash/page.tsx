@@ -29,7 +29,7 @@ export default async function ProtectedRoute() {
 
   if (!user.email || user.email.split("@")[1] !== "altumlabs.co") {
     // sign out the user and redirect to the login page
-    await signOut();
+    redirect("/login");
   }
 
   return (

@@ -43,7 +43,7 @@ export default async function Index() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log(user);
+  const emailDomain = (user?.email || "").split("@")[1];
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -81,15 +81,24 @@ export default async function Index() {
             </p>
           </div>
           <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-          <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
-            Welcome, {user?.user_metadata.full_name ?? "friend"}.
-          </p>
-          <Link
-            href="/dash"
-            className="bg-foreground py-3 px-6 rounded-lg font-mono text-sm text-background"
-          >
-            Go to dashboard
-          </Link>
+          {emailDomain === "altumlabs.com" ? (
+            <>
+              <Link
+                href="/dash"
+                className="bg-foreground py-3 px-6 rounded-lg font-mono text-sm text-background"
+              >
+                Go to dashboard
+              </Link>
+              <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
+                Welcome, {user?.user_metadata.full_name ?? "friend"}.
+              </p>
+            </>
+          ) : (
+            <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
+              You must sign in with an <code>altumlabs.com</code> email address
+              to access this service.
+            </p>
+          )}
         </div>
 
         <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
