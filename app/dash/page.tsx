@@ -6,9 +6,11 @@ import {
   createServerComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedRoute() {
+  // "use server";
   const supabase = createServerComponentClient({ cookies });
 
   const {
@@ -21,30 +23,37 @@ export default async function ProtectedRoute() {
     redirect("/login");
   }
 
-  const signOut = async () => {
-    "use server";
-    const supabase = createServerActionClient({ cookies });
-    await supabase.auth.signOut();
-    redirect("/login");
-  };
+  // const signOut = async () => {
+  //   "use server";
+  //   const supabase = createServerActionClient({ cookies });
+  //   // const supabase = createClientComponentClient();
+  //   await supabase.auth.signOut();
+  //   redirect("/login");
+  // };
 
   if (!user.email || user.email.split("@")[1] !== "altumlabs.co") {
     // sign out the user and redirect to the login page
-    redirect("/login");
+    redirect("/");
   }
 
   console.log("test");
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center dark:text-white">
       dashboard
       
-      <button
+      {/* <button
         onClick={signOut}
-        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover dark:bg-gray-100"
+        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover dark:bg-gray-500"
       >
         Sign out
-      </button>
+      </button> */}
+      <Link
+        href="/"
+        className="bg-foreground py-3 px-6 rounded-lg font-mono text-sm text-background"
+      >
+        Back
+      </Link>
       <Table />
     </div>
   );

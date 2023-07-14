@@ -58,7 +58,9 @@ export default function Login() {
         </svg>{" "}
         Back
       </Link>
-      <p>Sign in with your Altum gmail account to continue</p>
+      <p className="dark:text-white">
+        Sign in with your Altum gmail account to continue
+      </p>
       <Auth
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}

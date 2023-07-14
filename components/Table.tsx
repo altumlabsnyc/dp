@@ -12,8 +12,9 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Spinner, { Size } from "./Spinner";
@@ -129,6 +130,7 @@ const Table: React.FC = () => {
     data: tableData || [],
     columns: columsns2,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   if (error) return <div>Error loading data</div>;

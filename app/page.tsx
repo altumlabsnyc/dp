@@ -53,6 +53,7 @@ export default async function Index() {
           <div>
             {user ? (
               <div className="flex items-center gap-4">
+                {user.email}
                 <LogoutButton />
               </div>
             ) : (
@@ -94,12 +95,13 @@ export default async function Index() {
               </Link>
             </>
           ) : (
-            <>
+            <div className="flex flex-col items-center">
               <p className="text-xl font-mono !leading-tight mx-auto max-w-xl text-center my-12">
-                You must sign in with an <code>altumlabs.co</code> email address
+                {user?.email && <span className="text-red-400">Error: </span>}You must sign in with an <code>altumlabs.co</code> email address
                 to access this service.
               </p>
-            </>
+              {user?.email && <LogoutButton />}
+            </div>
           )}
         </div>
 
