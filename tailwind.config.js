@@ -19,5 +19,6 @@ module.exports = {
       },
     },
   },
+  safelist: ["w-3", "w-4", "w-6", "w-8", "h-3", "h-4", "h-6", "h-8"],
   plugins: [],
 };

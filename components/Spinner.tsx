@@ -1,9 +1,28 @@
-export default function Spinner() {
+import classNames from "classnames";
+
+export enum Size {
+  xs,
+  small,
+  medium,
+  large,
+}
+
+interface Props {
+  size?: Size;
+}
+
+export default function Spinner({ size }: Props) {
   return (
     <>
       <svg
         aria-hidden="true"
-        className="w-6 h-6 mr-2 text-gray-200 animate-spin-fast dark:text-gray-600 fill-blue-600"
+        className={classNames(
+          { "w-3 h-3": size === Size.xs },
+          { "w-4 h-4": size === Size.small },
+          { "w-6 h-6": size === Size.medium },
+          { "w-8 h-8": size === Size.large },
+          "text-gray-200 animate-spin-fast dark:text-gray-600 fill-gray-600"
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

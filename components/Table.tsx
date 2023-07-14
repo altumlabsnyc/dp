@@ -1,8 +1,14 @@
 "use client";
 
 import { Database } from "@/types/supabase";
+import revalidate from "@/utils/revalidate";
+import {
+  ArrowTopRightOnSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -10,7 +16,7 @@ import {
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useSWR, { mutate } from "swr";
-import Spinner from "./Spinner";
+import Spinner, { Size } from "./Spinner";
 import AddMoleculeForm from "./Table/AddMoleculeForm";
 
 // create a custom type for the table data
@@ -47,10 +53,14 @@ const EditableCell = ({ cell, updateData }) => {
     setValue(cell.getValue());
   }, [cell.getValue()]);
 
+  if (cell.column.id === "actions") {
+    return <p>test</p>;
+  }
+
   return (
-    <div className="">
+    <div className="w-full p-2">
       <input
-        className="text-center bg-transparent"
+        className="text-center bg-transparent w-full"
         value={value}
         onChange={onChange}
         onBlur={onBlur}
@@ -85,6 +95,92 @@ const Table: React.FC = () => {
 
   // const columnHelper = createColumnHelper<ColumnData>();
 
+  const deleteMolecule = async (rowId: string) => {
+    setLoading(true);
+
+    if (!tableData) {
+      toast.error("No data to delete");
+      return;
+    }
+
+    // find the row to delete
+    const rowIndex = tableData.findIndex((row) => row.id === rowId);
+
+    // Get the molecule to delete
+    const moleculeToDelete = tableData[rowIndex];
+
+    // Delete the molecule from the database
+    const { data, error } = await supabase
+      .from("molecule")
+      .delete()
+      .eq("id", moleculeToDelete.id);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Molecule deleted successfully");
+    }
+
+    await revalidate("/api/molecule");
+
+    setLoading(false);
+  };
+
+  const builder = createColumnHelper<RowData>();
+
+  const columsns2 = [
+    builder.accessor("name", {
+      id: "name",
+      cell: (row: RowData) => (
+        <EditableCell cell={row} updateData={updateData} />
+      ),
+    }),
+    builder.accessor("smiles", {
+      id: "smiles",
+      cell: (row: RowData) => (
+        <EditableCell cell={row} updateData={updateData} />
+      ),
+    }),
+    builder.accessor("spectrum", {
+      id: "spectrum",
+      cell: (row: RowData) => (
+        <EditableCell cell={row} updateData={updateData} />
+      ),
+    }),
+    builder.display({
+      id: "actions",
+      header: "actions",
+      cell: (row: RowData) => {
+        return (
+          <div className="flex justify-around items-center py-2">
+            <button
+              className="bg-red-200 px-2 py-1 rounded-md"
+              onClick={() => deleteMolecule(row.cell.row.original.id)}
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner size={Size.xs} />
+              ) : (
+                <TrashIcon className="h-4 w-4" />
+              )}
+            </button>
+            <button
+              className="bg-green-200 px-2 py-1 rounded-md"
+              onClick={() => deleteMolecule(row.cell.row.original.id)}
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner size={Size.xs} />
+              ) : (
+                <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+        );
+      },
+    }),
+  ];
+
   let columns = [
     {
       id: "name",
@@ -106,11 +202,15 @@ const Table: React.FC = () => {
       id: "spectrum",
       accessorFn: (row: RowData) => `${row.spectrum}`,
     },
+    {
+      id: "actions",
+      // cell: (row: RowData) => <p>test</p>,
+    },
   ];
 
   const table = useReactTable({
     data: tableData || [],
-    columns: columns,
+    columns: columsns2,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -162,35 +262,32 @@ const Table: React.FC = () => {
 
   const addMolecule = async (newMolecule: RowData) => {
     setLoading(true);
-    // Optimistically update the local data
-    mutate("/api/molecule", [...tableData, newMolecule], false);
 
     // Insert new molecule into the database
     const { data, error } = await supabase.from("molecule").insert(newMolecule);
 
     if (error) {
       toast.error(error.message);
-      // If the insert failed, roll back the optimistic update
-      mutate("/api/molecule");
     } else {
       toast.success("Molecule added successfully");
-      // If the insert was successful, update the local data with the server data
-      mutate("/api/molecule", (oldData) => [...oldData, data?.[0]], false);
     }
+
+    await revalidate("/api/molecule");
 
     setLoading(false);
   };
 
   return (
-    <div className="p-2">
+    <div className="p-2 flex flex-col items-center">
       <Toaster />
       {loading && (
         <div className="absolute top-2 right-2">
-          <Spinner />
+          <Spinner size={Size.small} />
         </div>
       )}
-      <AddMoleculeForm addMolecule={addMolecule} />
-      <table>
+      <AddMoleculeForm addMolecule={addMolecule} loading={loading} />
+      <div className="h-1 w-5/6 bg-gray-300 rounded-md mb-4" />
+      <table className="w-full">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr className="border border-gray-300" key={headerGroup.id}>
@@ -211,9 +308,12 @@ const Table: React.FC = () => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border border-gray-300">
-                  <EditableCell cell={cell} updateData={updateData} />
-                  {/* {flexRender(cell.column.columnDef.cell, cell.getContext())} */}
+                <td
+                  key={cell.id}
+                  className="border border-gray-300 text-center"
+                >
+                  {/* <EditableCell cell={cell} updateData={updateData} /> */}
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>
