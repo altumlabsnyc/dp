@@ -1,13 +1,16 @@
 // TODO: Duplicate or move this file outside the `_examples` folder to make it a route
 
 import Table from "@/components/Table";
-import {
-  createServerActionClient,
-  createServerComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
+import dynamic from "next/dynamic";
+const MoleculeStructure = dynamic(
+  () => import("@/components/MoleculeStructure"),
+  { ssr: false }
+);
 
 export default async function ProtectedRoute() {
   // "use server";
@@ -36,12 +39,13 @@ export default async function ProtectedRoute() {
     redirect("/");
   }
 
-  console.log("test");
-
   return (
     <div className="flex flex-col items-center dark:text-white">
+      <MoleculeStructure
+        structure="CSCC[C@H](NC(=O)[C@H](CC1=CNC2=C1C=CC=C2)NC(=O)CCNC(=O)OC(C)(C)C)C(=O)N[C@@H](CC(O)=O)C(=O)N[C@@H](CC1=CC=CC=C1)C(N)=O"
+        id="smiles"
+      />
       dashboard
-      
       {/* <button
         onClick={signOut}
         className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover dark:bg-gray-500"
