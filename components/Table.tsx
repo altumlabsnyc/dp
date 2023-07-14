@@ -18,6 +18,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Spinner, { Size } from "./Spinner";
 import AddMoleculeForm from "./Table/AddMoleculeForm";
+import TextEditableCell from "./Table/TextEditableCell";
 
 // create a custom type for the table data
 export type RowData = Database["public"]["Tables"]["molecule"]["Row"];
@@ -32,68 +33,11 @@ const fetcher = async (url: string) => {
   return data;
 };
 
-const EditableCell = ({ cell, updateData }) => {
-  // We need to keep and update the state of the cell.
-  const [originalValue] = useState(cell.getValue());
-  const [value, setValue] = useState(cell.getValue());
-
-  const onChange = (e) => {
-    setValue(e.target.value);
-  };
-
-  const onBlur = () => {
-    if (originalValue !== value) {
-      updateData(cell.row.index, cell.column.id, value);
-    }
-  };
-
-  // If the initialValue is different from the current value
-  // The cell is getting edited
-  useEffect(() => {
-    setValue(cell.getValue());
-  }, [cell.getValue()]);
-
-  if (cell.column.id === "actions") {
-    return <p>test</p>;
-  }
-
-  return (
-    <div className="w-full p-2">
-      <input
-        className="text-center bg-transparent w-full"
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-      />
-    </div>
-  );
-};
-
 const Table: React.FC = () => {
   const supabase = createClientComponentClient<Database>();
 
   const { data: tableData, error } = useSWR("/api/molecule", fetcher);
   const [loading, setLoading] = useState(false);
-
-  // const fetchTableData = async () => {
-  //   const { data, error } = await supabase.from("molecule").select("*");
-
-  //   console.log(data, error);
-
-  //   if (error) {
-  //     console.error(error);
-  //   } else {
-  //     setTableData(data);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchTableData();
-  // }, []);
-
-  // const [tableData, setTableData] = useState<RowData[]>([]);
-
-  // const columnHelper = createColumnHelper<ColumnData>();
 
   const deleteMolecule = async (rowId: string) => {
     setLoading(true);
@@ -132,19 +76,19 @@ const Table: React.FC = () => {
     builder.accessor("name", {
       id: "name",
       cell: (row: RowData) => (
-        <EditableCell cell={row} updateData={updateData} />
+        <TextEditableCell cell={row} updateData={updateData} />
       ),
     }),
     builder.accessor("smiles", {
       id: "smiles",
       cell: (row: RowData) => (
-        <EditableCell cell={row} updateData={updateData} />
+        <TextEditableCell cell={row} updateData={updateData} />
       ),
     }),
     builder.accessor("spectrum", {
       id: "spectrum",
       cell: (row: RowData) => (
-        <EditableCell cell={row} updateData={updateData} />
+        <TextEditableCell cell={row} updateData={updateData} />
       ),
     }),
     builder.display({
@@ -179,33 +123,6 @@ const Table: React.FC = () => {
         );
       },
     }),
-  ];
-
-  let columns = [
-    {
-      id: "name",
-      accessorFn: (row: RowData) => `${row.name}`,
-    },
-    {
-      id: "external_id",
-      accessorFn: (row: RowData) => `${row.external_id}`,
-    },
-    // {
-    //   id: "id",
-    //   accessorFn: (row: RowData) => `${row.id}`,
-    // },
-    {
-      id: "smiles",
-      accessorFn: (row: RowData) => `${row.smiles}`,
-    },
-    {
-      id: "spectrum",
-      accessorFn: (row: RowData) => `${row.spectrum}`,
-    },
-    {
-      id: "actions",
-      // cell: (row: RowData) => <p>test</p>,
-    },
   ];
 
   const table = useReactTable({
@@ -292,7 +209,7 @@ const Table: React.FC = () => {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr className="border border-gray-300" key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border border-gray-300 p-3">
+                <th key={header.id} className="border border-gray-300 p-3 dark:text-white">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -310,7 +227,7 @@ const Table: React.FC = () => {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className="border border-gray-300 text-center"
+                  className="border border-gray-300 text-center dark:text-white"
                 >
                   {/* <EditableCell cell={cell} updateData={updateData} /> */}
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

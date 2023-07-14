@@ -41,7 +41,7 @@ export default async function ProtectedRoute() {
       
       <button
         onClick={signOut}
-        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover dark:bg-gray-100"
       >
         Sign out
       </button>
