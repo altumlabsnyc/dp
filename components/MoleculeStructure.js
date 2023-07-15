@@ -4,6 +4,7 @@ import initRDKitModule from "@rdkit/rdkit";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { Component } from "react";
+import Spinner, { Size } from "./Spinner";
 
 const initRDKit = (() => {
   let rdkitLoadingPromise;
@@ -200,7 +201,15 @@ class MoleculeStructure extends Component {
       return "Error loading renderer.";
     }
     if (!this.state.rdKitLoaded) {
-      return "Loading renderer...";
+      return (
+        <div
+          className="molecule-canvas-container"
+          width={this.props.width}
+          height={this.props.height}
+        >
+          <Spinner size={Size.xs} />
+        </div>
+      );
     }
 
     const mol = this.RDKit.get_mol(this.props.structure || "invalid");
@@ -217,23 +226,24 @@ class MoleculeStructure extends Component {
       return (
         <div
           title={this.props.structure}
-          className={"molecule-structure-svg " + (this.props.className || "")}
-          style={{ width: this.props.width, height: this.props.height }}
+          className={"molecule-structure-svg" + (this.props.className || "")}
+          style={{
+            width: this.props.width,
+            height: this.props.height,
+          }}
           dangerouslySetInnerHTML={{ __html: this.state.svg }}
         ></div>
       );
     } else {
       return (
-        <div
-          className={
-            "molecule-canvas-container " + (this.props.className || "")
-          }
-        >
+        <div className={"" + (this.props.className || "")}>
           <canvas
             title={this.props.structure}
             id={this.props.id}
             width={this.props.width}
             height={this.props.height}
+            className=""
+            style={{ backgroundColor: "transparent" }} // Add this line
           ></canvas>
         </div>
       );

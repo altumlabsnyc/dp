@@ -40,24 +40,22 @@ export default async function ProtectedRoute() {
   }
 
   return (
-    <div className="flex flex-col items-center dark:text-white">
-      <MoleculeStructure
-        structure="CSCC[C@H](NC(=O)[C@H](CC1=CNC2=C1C=CC=C2)NC(=O)CCNC(=O)OC(C)(C)C)C(=O)N[C@@H](CC(O)=O)C(=O)N[C@@H](CC1=CC=CC=C1)C(N)=O"
-        id="smiles"
-      />
-      dashboard
+    <div className="flex flex-col items-center dark:text-white w-full">
       {/* <button
         onClick={signOut}
         className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover dark:bg-gray-500"
       >
         Sign out
       </button> */}
-      <Link
-        href="/"
-        className="bg-foreground py-3 px-6 rounded-lg font-mono text-sm text-background"
-      >
-        Back
-      </Link>
+      <div className="py-4 relative w-full">
+        <Link
+          href="/"
+          className="absolute top-2 right-2 bg-foreground py-1 px-6 rounded-lg font-mono text-sm text-background"
+        >
+          {"<"} Home
+        </Link>
+      </div>
+
       <Table />
     </div>
   );

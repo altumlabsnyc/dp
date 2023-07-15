@@ -39,19 +39,17 @@ export default function AddMoleculeForm({ addMolecule, loading }: Props) {
           <label className="block">Spectrum</label>
           <input {...register("spectrum")} className="border p-1 w-full" />
         </div>
-        <div className="flex items-end">
-          <button
-            className="px-3 py-1 bg-gray-200 text-black rounded flex items-center"
-            disabled={loading}
-          >
-            Add Molecule
-            {loading && (
-              <span className="ml-2">
-                <Spinner size={Size.xs} />
-              </span>
-            )}
-          </button>
-        </div>
+        <button
+          className="px-3 py-1 bg-gray-200 text-black rounded flex items-center"
+          disabled={loading}
+        >
+          Add Molecule
+          {loading && (
+            <span className="ml-2">
+              <Spinner size={Size.xs} />
+            </span>
+          )}
+        </button>
       </div>
     </form>
   );
