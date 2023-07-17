@@ -329,7 +329,7 @@ const Table: React.FC = () => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0;
                   table.setPageIndex(page);
                 }}
-                className="border p-1 rounded w-16"
+                className="border p-1 rounded w-16 dark:bg-black"
               />
             </span>
             <select
@@ -337,6 +337,7 @@ const Table: React.FC = () => {
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}
+              className="dark:bg-black"
             >
               {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
