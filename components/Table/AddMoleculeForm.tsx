@@ -1,7 +1,5 @@
 "use client";
 
-import { Database } from "@/types/supabase";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useForm } from "react-hook-form";
 import Spinner, { Size } from "../Spinner";
 import { RowData } from "../Table";
@@ -12,7 +10,6 @@ interface Props {
 }
 
 export default function AddMoleculeForm({ addMolecule, loading }: Props) {
-  const supabase = createClientComponentClient<Database>();
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: any) => {

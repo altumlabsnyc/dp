@@ -2,18 +2,18 @@
 
 import { Database } from "@/types/supabase";
 import revalidate from "@/utils/revalidate";
-import {
-  ArrowTopRightOnSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   getPaginationRowModel,
   useReactTable,
+  ColumnFiltersState,
+  SortingState,
 } from "@tanstack/react-table";
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -23,6 +23,8 @@ import MoleculeStructure from "./MoleculeStructure";
 import Spinner, { Size } from "./Spinner";
 import AddMoleculeForm from "./Table/AddMoleculeForm";
 import TextEditableCell from "./Table/TextEditableCell";
+import FilterCell from "./Table/FilterCell";
+import ColumnFilter from "./Table/ColumnFilter";
 
 // create a custom type for the table data
 export type RowData = Database["public"]["Tables"]["molecule"]["Row"];
@@ -42,6 +44,11 @@ const Table: React.FC = () => {
 
   const { data: tableData, error } = useSWR("/api/molecule", fetcher);
   const [loading, setLoading] = useState(false);
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   const deleteMolecule = async (rowId: string) => {
     setLoading(true);
@@ -77,6 +84,14 @@ const Table: React.FC = () => {
   const builder = createColumnHelper<RowData>();
 
   const columsns2 = [
+    builder.accessor("index", {
+      id: "index",
+      cell: (row: RowData) => (
+        <div className="flex h-7 flex-col items-center justify-center">
+          <TextEditableCell cell={row} updateData={updateData} />
+        </div>
+      ),
+    }),
     builder.accessor("smiles", {
       id: "smiles",
       cell: (row: RowData) => (
@@ -91,23 +106,17 @@ const Table: React.FC = () => {
         </div>
       ),
     }),
-    builder.group({
+    builder.accessor("name", {
       id: "name",
-      header: () => <p>Names</p>,
-      columns: [
-        builder.accessor("name", {
-          id: "name",
-          cell: (row: RowData) => (
-            <TextEditableCell cell={row} updateData={updateData} />
-          ),
-        }),
-        builder.accessor("common_name", {
-          id: "common_name",
-          cell: (row: RowData) => (
-            <TextEditableCell cell={row} updateData={updateData} />
-          ),
-        }),
-      ],
+      cell: (row: RowData) => (
+        <TextEditableCell cell={row} updateData={updateData} />
+      ),
+    }),
+    builder.accessor("common_name", {
+      id: "common_name",
+      cell: (row: RowData) => (
+        <TextEditableCell cell={row} updateData={updateData} />
+      ),
     }),
     builder.accessor("molecular_weight", {
       id: "molecular_weight",
@@ -183,10 +192,10 @@ const Table: React.FC = () => {
               {loading ? (
                 <Spinner size={Size.xs} />
               ) : (
-                <TrashIcon className="h-3 w-3" />
+                <TrashIcon className="h-3 w-3 dark:stroke-black" />
               )}
             </button>
-            <button
+            {/* <button
               className="bg-green-200 px-1 py-0.5 rounded-md"
               onClick={() => deleteMolecule(row.cell.row.original.id)}
               disabled={loading}
@@ -194,9 +203,9 @@ const Table: React.FC = () => {
               {loading ? (
                 <Spinner size={Size.xs} />
               ) : (
-                <ArrowTopRightOnSquareIcon className="h-3 w-3" />
+                <ArrowTopRightOnSquareIcon className="h-3 w-3 dark:stroke-black" />
               )}
-            </button>
+            </button> */}
           </div>
         );
       },
@@ -206,8 +215,19 @@ const Table: React.FC = () => {
   const table = useReactTable({
     data: tableData || [],
     columns: columsns2,
+    // filterFns: {
+    //   fuzzy: fuzzyFilter,
+    // },
+    state: {
+      columnFilters,
+      globalFilter,
+    },
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    // globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex: false,
   });
@@ -218,8 +238,6 @@ const Table: React.FC = () => {
 
   const updateData = async (rowIndex: number, columnId: string, value: any) => {
     setLoading(true);
-
-    console.log(table.pag);
 
     // This is a custom function that we supplied to our table instance
     let updatedRow = { ...tableData[rowIndex], [columnId]: value };
@@ -348,6 +366,14 @@ const Table: React.FC = () => {
           </div>
         </div>
       </div>
+      <div>
+        <FilterCell
+          className="p-2 font-lg shadow border border-block text-black"
+          value={globalFilter ?? ""}
+          onChange={(value) => setGlobalFilter(String(value))}
+          placeholder="Global Search"
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="text-xs">
           <thead>
@@ -367,6 +393,9 @@ const Table: React.FC = () => {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                    <div>
+                      <ColumnFilter column={header.column} table={table} />
+                    </div>
                   </th>
                 ))}
               </tr>
