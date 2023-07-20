@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
+import Popup from "./Popup";
 
 export default function EditableCell({ cell, updateData }) {
-  // We need to keep and update the state of the cell.
-  const [originalValue] = useState(cell.getValue());
   const [value, setValue] = useState(cell.getValue());
+  const [isOpen, setIsOpen] = useState(false);
 
-  const onChange = (e) => {
-    setValue(e.target.value);
-  };
-
-  const onBlur = () => {
-    if (originalValue !== value) {
-      updateData(cell.row.index, cell.column.id, value);
-    }
+  const handleClick = () => {
+    setIsOpen(true);
   };
 
   // If the initialValue is different from the current value
@@ -27,12 +21,18 @@ export default function EditableCell({ cell, updateData }) {
 
   return (
     <div className="w-full">
-      <input
-        className="text-center bg-transparent w-full"
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
+      <Popup
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        cell={cell}
+        updateData={updateData}
       />
+      <button
+        className="text-center bg-transparent w-full"
+        onClick={handleClick}
+      >
+        {value}
+      </button>
     </div>
   );
 }

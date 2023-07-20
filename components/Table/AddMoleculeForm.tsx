@@ -19,7 +19,7 @@ export default function AddMoleculeForm({ addMolecule, loading }: Props) {
 
   return (
     <form className="mb-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-wrap items-center gap-4 justify-center dark:text-white">
+      <div className="flex flex-wrap items-center gap-4 justify-center">
         <div>
           <label className="block">Name</label>
           <input {...register("name")} className="border p-1 w-full" />

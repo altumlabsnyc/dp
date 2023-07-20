@@ -24,7 +24,7 @@ import Spinner, { Size } from "./Spinner";
 import AddMoleculeForm from "./Table/AddMoleculeForm";
 import TextEditableCell from "./Table/TextEditableCell";
 import FilterCell from "./Table/FilterCell";
-import ColumnFilter from "./Table/ColumnFilter";
+import FilterColumn from "./Table/FilterColumn";
 
 // create a custom type for the table data
 export type RowData = Database["public"]["Tables"]["molecule"]["Row"];
@@ -394,7 +394,7 @@ const Table: React.FC = () => {
                           header.getContext()
                         )}
                     <div>
-                      <ColumnFilter column={header.column} table={table} />
+                      <FilterColumn column={header.column} table={table} />
                     </div>
                   </th>
                 ))}
