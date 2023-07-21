@@ -1,6 +1,6 @@
-# Supabase Starter
+# Internal Molecule Database Website
 
-This starter configures Supabase Auth to use cookies, making the user's session available throughout the entire Next.js app - Client Components, Server Components, Route Handlers, Server Actions and Middleware.
+This repository contains the internal website intended for the Mass Spec team of Altum Laboratories, Inc. to modify the molecule database through a more straight forward UI. Apart from editing, it also provides
 
 ## Deploy your own
 

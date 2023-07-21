@@ -66,7 +66,7 @@ export default function Popup({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="flex flex-col items-center w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="flex flex-col items-center w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all space-y-2">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
@@ -74,22 +74,26 @@ export default function Popup({
                   Enter new value
                 </Dialog.Title>
                 <div>
-                  <input value={value} onChange={handleChange} />
+                  <input
+                    className="text-center"
+                    value={value}
+                    onChange={handleChange}
+                  />
                 </div>
-                <ul>
+                <div className="flex space-x-2">
                   <button
-                    className="bg-red-300 rounded text-center flex-auto"
+                    className="bg-red-300 rounded text-center px-2 py-1"
                     onClick={handleCancel}
                   >
                     Cancel
                   </button>
                   <button
-                    className="bg-green-300 rounded text-center flex-auto"
+                    className="bg-green-300 rounded text-center px-2 py-1"
                     onClick={handleConfirm}
                   >
                     Confirm
                   </button>
-                </ul>
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
