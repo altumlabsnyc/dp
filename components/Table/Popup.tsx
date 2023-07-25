@@ -1,6 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
-import { set } from "react-hook-form";
 
 export default function Popup({
   isOpen,
